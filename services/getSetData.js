@@ -1,7 +1,8 @@
 const fs = require('fs').promises;
+const path = require('path');
 
 async function getTalker() {
-  const fileContent = await fs.readFile('./talker.json', 'utf-8');
+  const fileContent = await fs.readFile(path.join(__dirname, '../talker.json'), 'utf-8');
     return JSON.parse(fileContent);
 }
 
