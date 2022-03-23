@@ -15,6 +15,7 @@ describe('3 - Crie o endpoint POST /login', () => {
       .then((responseLogin) => {
         const { body } = responseLogin;
         const result = JSON.parse(body);
+        console.log(result);
         expect(result.token.length).toBe(16);
       });
   });
