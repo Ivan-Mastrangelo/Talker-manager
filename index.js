@@ -16,6 +16,9 @@ app.get('/', (_request, response) => {
 
 app.get('/talker', async (req, res) => {
   const talkers = await getSetTalker.getTalker();
+  if (talkers.name === '') {
+    return res.status(200).json([]);
+  }
   return res.status(200).json(talkers);
 });
 
