@@ -19,7 +19,26 @@ router.get('/:id', async (req, res) => {
   if (getTalkerById === undefined) {
     return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
-  res.status(200).json(getTalkerById);
+  return res.status(200).json(getTalkerById);
+});
+
+router.post('/', async (req, res) => {
+  const talkers = await getSetTalker.getTalker();
+  const { name, age, talk: { watchedAt, rate } } = req.body;
+  const talker = {
+    name,
+    age,
+    id: talkers.length + 1,
+    talk: {
+      watchedAt,
+      rate,
+      },
+  };
+const newTalker = [{ ...talkers }, talker];
+
+await getSetTalker.setTalker(newTalker);
+
+  res.status(201).json(talker);
 });
 
 module.exports = router;
