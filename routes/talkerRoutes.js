@@ -67,4 +67,14 @@ router.put(('/:id'), validToken, nameAndAgeValid, validDate, validRate, async (r
   return res.status(200).json(editedTalker);
 });
 
+router.delete(('/:id'), validToken, async (req, res) => {
+  const talkers = await getSetTalker.getTalker();
+  const { id } = req.params;
+  const talkerIndex = talkers.findIndex((talker) => talker.id === +id);
+  const deleteTalker = talkers.filter((_talker, index) => index !== talkerIndex);  
+  console.log(deleteTalker);
+  await getSetTalker.setTalker(deleteTalker);
+  res.status(204).end();
+});
+
 module.exports = router;
