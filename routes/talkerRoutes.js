@@ -17,8 +17,19 @@ router.get('/', async (req, res) => {
   return res.status(200).json(talkers);
 });
 
+router.get('/search/', validToken, async (req, res) => {
+  const talkers = await getSetTalker.getTalker();
+  const { searchTherm } = req.query;
+  if (!searchTherm) return res.status(200).json(talkers);
+  if (searchTherm.length === 0) return res.status(200).json(talkers);
+  const filteredTalkers = talkers.filter((talker) => talker.name.includes(searchTherm));
+  if (filteredTalkers === false) return res.status(200).json([]);
+  res.status(200).json(filteredTalkers);
+});
+
 router.get('/:id', async (req, res) => {
   const talkers = await getSetTalker.getTalker();
+  console.log(talkers);
   const { id } = req.params;
   const getTalkerById = talkers.find((talker) => talker.id === +id);
   if (getTalkerById === undefined) {
@@ -39,9 +50,9 @@ router.post('/', validToken, nameAndAgeValid, validDate, validRate, async (req, 
       rate,
     },
   };
-  const newTalker = [{ ...talkers }, talker];
-
-  await getSetTalker.setTalker(newTalker);
+  // const newTalker = [{ ...talkers }, talker];
+  talkers.push(talker);
+  await getSetTalker.setTalker(talkers);
 
   res.status(201).json(talker);
 });
@@ -78,3 +89,9 @@ router.delete(('/:id'), validToken, async (req, res) => {
 });
 
 module.exports = router;
+
+// app.get('/recipes/search', function (req, res) {
+//   const { name, maxPrice } = req.query;
+//   const filteredRecipes = recipes.filter((r) => r.name.includes(name) && r.price < parseInt(maxPrice));
+//   res.status(200).json(filteredRecipes);
+// })
