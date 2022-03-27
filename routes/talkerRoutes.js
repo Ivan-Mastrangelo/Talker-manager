@@ -19,7 +19,6 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   const talkers = await getSetTalker.getTalker();
-  console.log(talkers);
   const { id } = req.params;
   const getTalkerById = talkers.find((talker) => talker.id === +id);
   if (getTalkerById === undefined) {
@@ -47,15 +46,25 @@ router.post('/', validToken, nameAndAgeValid, validDate, validRate, async (req, 
   res.status(201).json(talker);
 });
 
+router.put(('/:id'), validToken, nameAndAgeValid, validDate, validRate, async (req, res) => {
+  const talkers = await getSetTalker.getTalker();
+  const { id } = req.params;
+  const { name, age, talk } = req.body;
+  const getTalkerByIndex = talkers.findIndex((talker) => talker.id === +id);
+  const editTalker = talkers[getTalkerByIndex];
+  const editedTalker = {
+    ...editTalker,
+    name,
+    age,
+    talk: { 
+      watchedAt: talk.watchedAt,
+      rate: talk.rate,
+    },
+  };
+  
+  talkers.push(editedTalker);
+  await getSetTalker.setTalker(talkers);
+  return res.status(200).json(editedTalker);
+});
+
 module.exports = router;
-
-// if (!talk) {
-//   return res.status(400)
-//   .json({ message: 'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios' });
-// } 
-// const { talk: { watchedAt, rate } } = req.body;
-
-// if (!talk.watchedAt || rate) {
-//   return res.status(400)
-//   .json({ message: 'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios' });
-// } 
